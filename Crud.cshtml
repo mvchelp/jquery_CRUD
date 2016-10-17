@@ -1,0 +1,197 @@
+﻿
+@{
+    ViewBag.Title = "Crud";
+}
+
+<h2>Crud</h2>
+
+@Html.ValidationSummary()
+
+<span id="errmsgText" style="color:red"></span>
+<div>
+    <label>First Name</label>
+    <input type="text" value="" id="FirstName" maxlength="10" class="form-control" />
+</div>
+<div>
+    <label>Last Name</label>
+    <input type="text" value="" id="LastName" maxlength="10" class="form-control" />
+</div>
+<div>
+    <label>Address</label>
+    <input type="text" value="" id="Address" maxlength="10" class="form-control" />
+</div>
+<div>
+    <label>Contact No</label>
+    <input type="text" value="" id="ContactNo" maxlength="10" class="form-control" />
+</div>
+<br />
+<div>
+    <input type="submit" value="Save" id="submitBtn" class="btn-primary" />
+</div>
+<br />
+<hr />
+<div>
+    <table id="tableId" class="table table-responsive table-hover">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Address</th>
+                <th>Contact No</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+
+<script>
+    var currentRow = "";
+    $(document).ready(function () {
+
+        clearControl();
+
+        $("#ContactNo").keypress(function (e) {
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                //display error message
+                return false;
+            }
+        });
+
+        $('#FirstName,#LastName').keypress(function (e) {
+            var regex = new RegExp("^[a-zA-Z\s]+$");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(str)) {
+                return true;
+            }
+            else {
+                e.preventDefault();
+                //alert('Please Enter Alphabate');
+                return false;
+            }
+        });
+
+        $("#tableId").on("click", ".BtnMinus", deleteRow);
+        $("#tableId").on("click", ".BtnPlus", editRow);
+    })
+
+    $("#submitBtn").click(function () {
+
+        if ($("#submitBtn").val() == "Save") {
+
+            $("#errmsgText").html("");
+            var errResult = "";
+
+            if ($("#FirstName").val() == "") {
+                errResult += "<li>Please Enter FirstName</li>";
+            }
+            if ($("#LastName").val() == "") {
+                errResult += "<li>Please Enter LastName</li>";
+            }
+            if ($("#Address").val() == "") {
+                errResult += "<li>Please Enter Address</li>";
+            }
+            if ($("#ContactNo").val() == "") {
+                errResult += "<li>Please Enter Contact No.</li>";
+            }
+
+            if (errResult.length > 0) {
+                $("#errmsgText").html(errResult);
+
+                return false;
+            }
+
+            $("#tableId tbody").append("<tr><td>" + $("#FirstName").val() + "</td><td>" + $("#LastName").val() + "</td><td>" + $("#Address").val() + "</td><td>" + $("#ContactNo").val() + '</td><td><input type="button" id="btnEdit" value="Edit" class="BtnPlus"/><input type="button" id="btnDelete" value="Delete" class="BtnMinus"/></td></tr>')
+            clearControl();
+        }
+        else {
+
+
+            $("#errmsgText").html("");
+            var errResult = "";
+
+            if ($("#FirstName").val() == "") {
+                errResult += "<li>Please Enter FirstName</li>";
+            }
+            if ($("#LastName").val() == "") {
+                errResult += "<li>Please Enter LastName</li>";
+            }
+            if ($("#Address").val() == "") {
+                errResult += "<li>Please Enter Address</li>";
+            }
+            if ($("#ContactNo").val() == "") {
+                errResult += "<li>Please Enter Contact No.</li>";
+            }
+
+            if (errResult.length > 0) {
+                $("#errmsgText").html(errResult);
+
+                return false;
+            }
+
+            debugger;
+
+            var tdFirstName = currentRow.children("td:nth-child(1)");//td 1
+            var tdLastName = currentRow.children("td:nth-child(2)");//td 2
+            var tdAddress = currentRow.children("td:nth-child(3)");//td 3
+            var tdContactNo = currentRow.children("td:nth-child(4)");//td 4
+
+            tdFirstName.html($("#FirstName").val());
+            tdLastName.html($("#LastName").val());
+            tdAddress.html($("#Address").val());
+            tdContactNo.html($("#ContactNo").val());
+
+            //$("#tableId tbody").append("<tr><td>" + $("#FirstName").val() + "</td><td>" + $("#LastName").val() + "</td><td>" + $("#Address").val() + "</td><td>" + $("#ContactNo").val() + '</td><td><input type="button" id="btnEdit" value="Edit" class="BtnPlus"/><input type="button" id="btnDelete" value="Delete" class="BtnMinus"/></td></tr>')
+
+            clearControl();
+
+            $("#submitBtn").prop("value", "Save");
+        }
+    })
+
+    function deleteRow() {
+        var par = $(this).parent().parent();
+        par.remove();
+    }
+
+    function editRow() {
+
+        debugger;
+        var par = $(this).parent().parent(); //tr
+        var tdFirstName = par.children("td:nth-child(1)");//td 1
+        var tdLastName = par.children("td:nth-child(2)");//td 2
+        var tdAddress = par.children("td:nth-child(3)");//td 3
+        var tdContactNo = par.children("td:nth-child(4)");//td 4
+
+        //debugger;
+        //tdFirstName.html("<input type='Text' id='tdFirstName value='" + tdFirstName.html() + "''/>");
+        //tdLastName.html("<input type='Text' id='tdLastName' value='" + tdLastName.html() + "'/>");
+        //tdAddress.html("<input type='Text' id='tdAddress' value='" + tdAddress.html() + "'/>");
+        //tdContactNo.html("<input type='Text' id='tdContactNo' value='" + tdContactNo.html() + "'/>");
+
+        debugger;
+        $("#FirstName").val(tdFirstName.html());
+        $("#LastName").val(tdLastName.html());
+        $("#Address").val(tdAddress.html());
+        $("#ContactNo").val(tdContactNo.html());
+
+        $("#submitBtn").prop("value", "Update");
+
+        currentRow = par;
+    }
+
+    function clearControl() {
+        $("#FirstName").val("");
+        $("#LastName").val("");
+        $("#Address").val("");
+        $("#ContactNo").val("");
+    }
+
+</script>
+
